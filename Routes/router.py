@@ -47,6 +47,8 @@ def update_task(id:int,task:UpdateTask,db:Session=Depends(get_db)):
     if not todo:
         return {"message":"Task not found"}
     for key,value in data.items():
+        if value==None or value=="":
+            continue
         setattr(todo,key,value)
     db.commit()
     db.refresh(todo)
