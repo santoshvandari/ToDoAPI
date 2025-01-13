@@ -1,16 +1,15 @@
 from typing import Annotated
 from fastapi import HTTPException,Depends,Security,status
-from jose import jwt, JWTError
+from jose import jwt
+from jose.exceptions import JWTError
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 from fastapi.security import OAuth2PasswordBearer,SecurityScopes
 from pydantic import ValidationError
-from jwt.exceptions import InvalidTokenError
 from DB.getdb import get_db
-from Model.auth_Schema import TokenData
+from Model.auth_Schema import TokenData,UserInDB
 from DB.model import User
-from Model.auth_Schema import UserInDB
-from DB.db_config import Session
+from sqlalchemy.orm import Session
 
 
 
@@ -37,12 +36,12 @@ def get_password_hash(password):
 
 
 def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
+    user = db.query(User).filter(User.username==username).first()
+    if user:
+        return UserInDB(username=user.username)
 
 
-def authenticate_user(username: str, password: str,db:Session = Depends(get_db)):
+def authenticate_user(username: str, password: str,db: Session = Depends(get_db)):
     user=db.query(User).filter(User.username==username).first()
     if not user:
         return False
@@ -77,9 +76,8 @@ async def get_current_user(security_scopes: SecurityScopes, token: Annotated[str
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_scopes = payload.get("scopes", [])
-        token_data = TokenData(scopes=token_scopes, username=username)
-    except (InvalidTokenError, ValidationError):
+        token_data = TokenData(username=username)
+    except (JWTError, ValidationError):
         raise credentials_exception
     user = db.query(User).filter(User.username==token_data.username).first()
     if user is None:

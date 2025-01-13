@@ -2,20 +2,20 @@ from pydantic import BaseModel
 
 class Token(BaseModel):
     access_token: str
-    token_type: str
-
 
 class TokenData(BaseModel):
-    username: str | None = None
-    scopes: list[str] = []
-
-
-class User(BaseModel):
     username: str
-    email: str | None = None
-    full_name: str | None = None
-    disabled: bool | None = None
+
+class UserInDB(BaseModel):
+    username: str
+
+class UserData(BaseModel):
+    username: str
+    email: str
+    todos: list = []
 
 
-class UserInDB(User):
-    hashed_password: str
+class CreateUser(BaseModel):
+    username: str
+    email: str
+    password: str
