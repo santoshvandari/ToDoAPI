@@ -18,7 +18,6 @@ class ToDo(Base):
 class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True, index=True,autoincrement=True)
-    username = Column(String,unique=True,index=True,nullable=False)
     email = Column(String,unique=True,index=True,nullable=False)
     password = Column(String,nullable=False)
     todo = relationship("ToDo", back_populates="user")
