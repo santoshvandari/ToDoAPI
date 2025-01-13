@@ -6,8 +6,8 @@ Base = declarative_base()
 
 class ToDo(Base):
     __tablename__ = "todo"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True,autoincrement=True)
     title = Column(String)
     description = Column(String)
-    status = Column(Boolean)
+    status = Column(Boolean,default=False)
 
