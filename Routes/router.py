@@ -1,16 +1,16 @@
 from fastapi import APIRouter
-from DB.getdb import get_db
+from DB.db_config import get_db
 from Model.schema import CreateTask, DisplayTask,UpdateTask
 from sqlalchemy.orm import Session
 from fastapi import Depends
 from DB.model import ToDo
 
-route=APIRouter()
+route=APIRouter(tags=["Task"])
+# route = APIRouter()
 
 @route.get("/")
 async def read_root():
     db = get_db()
-
     return {"Hello": "World"}
 
 
