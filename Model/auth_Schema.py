@@ -10,9 +10,10 @@ class UserData(BaseModel):
     email: str
     tasklist: list
 
+
 class Token(BaseModel):
     access_token: str
     token_type: str
 
-class TokenData(BaseModel):
-    email: str = None
+class Register(Token):
+    email: str

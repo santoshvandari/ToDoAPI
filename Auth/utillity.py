@@ -2,10 +2,10 @@ from datetime import datetime, timedelta
 from fastapi import Depends,status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from DB.db_config import get_db
-from DB.model import ToDo,User
+from DB.model import User
 from passlib.context import CryptContext
 import jwt
+from DB.db_config import get_db
 
 SECRET_KEY="0ad5155eb05e9872a2a9d266ebeee912ee49b108d7a7928b39cba4e2e104cc99"
 ALGORITHM="HS256"
@@ -22,7 +22,7 @@ def get_password_hash(password):
     return bcrypt_context.hash(password)
 
 
-def create_access_token(id,email,):
+def create_access_token(id,email):
     to_encode={"id":id,"email":email}
     expire=datetime.utcnow()+timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp":expire})
@@ -39,7 +39,7 @@ def authenticate_user(db:Session,email:str,password:str):
     return user
 
 
-def get_current_user(db:Session,token:str=Depends(oauth2_scheme)):
+def get_current_user(token:str=Depends(oauth2_scheme),db:Session=Depends(get_db)):
     credentials_exception=Exception(status=status.HTTP_401_UNAUTHORIZED,details="Could not validate credentials",headers={"WWW-Authenticate":"Bearer"})
     try:
         payload=jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])

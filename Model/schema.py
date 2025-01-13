@@ -15,8 +15,4 @@ class DisplayTask(BaseModel):
     title: str
     description: str
     status: bool
-
-
-class CreateUser(BaseModel):
-    email: str
-    password: str
+    userid: int

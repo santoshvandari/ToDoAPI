@@ -1,5 +1,5 @@
 from Routes.router import route
-# from Routes.auth_router import authroute
+from Routes.auth_router import authroute
 from fastapi import FastAPI
 from DB.model import Base
 from DB.db_config import engine
@@ -12,5 +12,5 @@ if not os.path.exists("todo.db"):
 
 app = FastAPI()
 app.include_router(route)
-# app.include_router(authroute)
+app.include_router(authroute)
 
