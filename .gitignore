@@ -1,0 +1,6 @@
+/venv
+/__pycache__
+/Auth/__pycache__
+/DB/__pycache__
+/Model/__pycache__
+/Routes/__pycache__
