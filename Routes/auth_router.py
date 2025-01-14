@@ -5,6 +5,7 @@ from DB.db_config import get_db
 from DB.model import ToDo,User
 from sqlalchemy.orm import Session
 from Model.auth_Schema import Token,CreateUser,UserData,Register
+from Model.schema import DisplayTask
 
 
 authroute = APIRouter(tags=["Auth"])
@@ -41,4 +42,5 @@ async def read_users_me(current_user:User=Depends(get_current_user),db:Session=D
     print(current_user)
     userid= current_user.id
     tasklist= db.query(ToDo).filter(ToDo.userid==userid).all()
-    return UserData(id=current_user.id,email=current_user.email,tasklist=tasklist)
+    tasks=[DisplayTask.model_validate(task.__dict__) for task in tasklist]
+    return UserData(id=current_user.id,email=current_user.email,tasklist=tasks)

@@ -15,26 +15,27 @@ async def read_root():
     return {"Hello": "World"}
 
 
-@route.post("/create")
+@route.post("/create",status_code=status.HTTP_201_CREATED)
 def create_task(task: CreateTask, db: Session = Depends(get_db),user=Depends(get_current_user)):
     todo=ToDo(title=task.title,description=task.description,status=task.status,userid=user.id)
     db.add(todo)
     db.commit()
     db.refresh(todo)
+    return {"message":"Task created successfully","data":todo}
 
 
 
-@route.get("/task")
+@route.get("/task",response_model=list[DisplayTask])
 async def get_task(db: Session = Depends(get_db),user=Depends(get_current_user)):
-    tasklist= await  db.query(ToDo).filter(ToDo.userid==user.id).all()
+    tasklist= db.query(ToDo).filter(ToDo.userid==user.id).all()
     return tasklist
 
 
 @route.get("/task/{id}",response_model=DisplayTask)
 async def get_single_task(id:int,db: Session = Depends(get_db),user=Depends(get_current_user)):
-    task=db.query(ToDo).filter(ToDo.id==id & ToDo.userid==user.id).first()
+    task=db.query(ToDo).filter(ToDo.id==id,ToDo.userid==user.id).first()
     if not task:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,details="Task not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Task not found")
     return task
 
 
@@ -43,10 +44,12 @@ async def get_single_task(id:int,db: Session = Depends(get_db),user=Depends(get_
 async def update_task(id:int,task:UpdateTask,db:Session=Depends(get_db),user=Depends(get_current_user)):
     data = task.dict(exclude_unset=True)
     if not data :
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,details="No data provided")  
-    todo=db.query(ToDo).filter(ToDo.id==id & ToDo.userid==user.id).first()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="No data provided")  
+    todo=db.query(ToDo).filter(ToDo.id==id).first()
     if not todo:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,details="Task not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Task not found")
+    if todo.userid!=user.id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="You are not allowed to update this task")
     for key,value in data.items():
         if value==None or value=="":
             continue
@@ -57,9 +60,11 @@ async def update_task(id:int,task:UpdateTask,db:Session=Depends(get_db),user=Dep
 
 @route.delete("/task/{id}")
 async def delete_task(id:int,db:Session=Depends(get_db),user=Depends(get_current_user)):
-    todo=db.query(ToDo).filter(ToDo.id==id & ToDo.userid==user.id).first()
+    todo=db.query(ToDo).filter(ToDo.id==id, ToDo.userid==user.id).first()
     if not todo:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,details="Task not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Task not found")
+    if todo.userid!=user.id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="You are not allowed to delete this task")
     db.delete(todo)
     db.commit()
     return {"message":"Task deleted Successfyully"}

@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from Model.schema import DisplayTask
 
 
 class CreateUser(BaseModel):
@@ -8,7 +9,7 @@ class CreateUser(BaseModel):
 class UserData(BaseModel):
     id: int
     email: str
-    tasklist: list
+    tasklist: list[DisplayTask]
 
 
 class Token(BaseModel):

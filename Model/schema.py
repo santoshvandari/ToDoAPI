@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class CreateTask(BaseModel):
     title: str
@@ -16,3 +16,5 @@ class DisplayTask(BaseModel):
     description: str
     status: bool
     userid: int
+
+    model_config = ConfigDict(from_orm=True)
