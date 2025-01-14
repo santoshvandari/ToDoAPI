@@ -39,7 +39,6 @@ async def create_user(user:CreateUser,db:Session=Depends(get_db)):
 
 @authroute.get("/users/me",response_model=UserData)
 async def read_users_me(current_user:User=Depends(get_current_user),db:Session=Depends(get_db)):
-    print(current_user)
     userid= current_user.id
     tasklist= db.query(ToDo).filter(ToDo.userid==userid).all()
     tasks=[DisplayTask.model_validate(task.__dict__) for task in tasklist]
