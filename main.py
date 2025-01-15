@@ -17,7 +17,7 @@ app.include_router(authroute)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"], # allow all origins OR you can add your frontend url here
     allow_credentials=True,
     allow_methods=["GET", "POST","PATCH","DELETE"],
     allow_headers=["*"],
