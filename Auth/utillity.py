@@ -6,10 +6,16 @@ from DB.model import User
 from passlib.context import CryptContext
 import jwt,os
 from DB.db_config import get_db
+from dotenv import load_dotenv
+
+load_dotenv()
 
 SECRET_KEY=os.getenv("SECRET_KEY")
 ALGORITHM=os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES=os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
+ACCESS_TOKEN_EXPIRE_MINUTES=int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+
+
+print()
 
 # bcrypt_context=CryptContext(schemes=["bcrypt"],deprecated="auto")
 bcrypt_context=CryptContext(schemes=["bcrypt"],deprecated="auto")
