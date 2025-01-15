@@ -37,6 +37,20 @@ This project is a ToDo List API built with FastAPI, allowing users to manage the
 
    The application uses SQLite. The database will be automatically created when you run the application for the first time.
 
+5. **Set environment variables**:
+
+   Create a `.env` file in the project root and add the following environment variables:
+
+   ```bash
+   SECRET_KEY="<Enter your secret key here>"
+   ALGORITHM="<Enter your algorithm here>" # This is the algorithm used to sign the JWT token. You Can use HS256, HS384, HS512, RS256, RS384, RS512, ES256, ES384, ES512, PS256, PS384, PS512 and mostly used is HS256
+   ACCESS_TOKEN_EXPIRE_MINUTES=30 # This is the time in minutes for which the access token will be valid.
+   ```
+   Note: You can generate a secret key using the following command:
+   ```bash
+      openssl rand -hex 32
+   ```
+
 ## Usage
 
 1. **Run the application**:
