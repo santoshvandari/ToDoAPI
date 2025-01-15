@@ -5,3 +5,4 @@
 /Model/__pycache__
 /Routes/__pycache__
 /todo.db
+/Auth/.env
