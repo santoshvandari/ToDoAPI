@@ -10,7 +10,7 @@ export const TodoWrapper = () => {
     const addTodo = (todo) => {
         setTodos([
             ...todos,
-            { id: uuidv4(), task: todo, completed: false, isEditing: false },
+            { id: "uidv4()", task: todo, completed: false, isEditing: false },
         ]);
     }
 
